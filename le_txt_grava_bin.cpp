@@ -1,10 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
 
 struct nomes{
 	char nome[60];
 	char sobrenome[60];
-	Autor_lista *prox;
+	nomes *prox;
 };
 
 struct Autor_lista{
@@ -41,24 +43,57 @@ struct TpRegistro
 };
 
 
+editora *criaEditora(char editor[], editora *C)
+{
+		C = (editora*) malloc(sizeof(editora));
+		strcpy(C->nome,editor);
+		C->prox = NULL;
+		C->C =NULL;
+		return C;
+}
+
+Livros_lista *criaLivros(TpRegistro A, Livros_lista *C)
+{
+	C = (Livros_lista*)malloc(sizeof(Livros_lista));
+	C->ano = A.ano;
+	C->ant= NULL;
+	C->prox = NULL;
+	C->C=NULL;
+	C->pag= A.paginas;
+	strcpy(C->titulo,A.titulo_livro);
+	// possivel função para colocar autores aqui
+	return C;
+}
+
 editora *InsereEdit(TpRegistro A,editora *C)
 {
 	editora *aux = (editora*)malloc(sizeof(editora));
-	*aux = C;
-	while(aux->prox != NULL & stricmp(aux->prox->nome,A.editora)!= 0) aux = aux->prox;
 	
-	if(aux->prox == NULL && stricmp(aux->prox->nome,A.editora)!= 0)
+	if(C == NULL)
+		C = criaEditora(A.editora,C);
+	else
 	{
-		aux->prox = (editora*)malloc(sizeof(editora));
-		aux->prox->prox = NULL;
-		aux->C = (Livros_lista*)malloc(sizeof(Livros_lista));
-		aux->C->prox =	Livros_lista*)malloc(sizeof(Livros_lista));
-		aux->C->ant =	(Livros_lista*)malloc(sizeof(Livros_lista));
-		aux->C->prox =	 aux->C->ant = NULL;
-		aux->C = NULL;
+		while(aux->prox != NULL & stricmp(aux->prox->nome,A.editora)!= 0) aux = aux->prox;
+		
+		if(aux->prox == NULL && stricmp(aux->prox->nome,A.editora)!= 0)
+		{
+			aux->prox = criaEditora(A.editora,aux->prox);
+		//pulo pra caixa da frente, agora parto para a lista de livros trabalho aux agora
+			aux = aux->prox;
+		}
 		
 		
 	}
+	if(C->C == NULL)// editora sem livros
+		C->C = criaLivros(A,C->C);
+	else
+	{
+		
+	}
+	
+	
+	
+	
 	
 	return C;
 }
@@ -96,7 +131,7 @@ void gera_arq_bin()
 int main(void)
 {
 	editora *CabecaEditora = (editora*)malloc(sizeof(editora));
-	*CabecaEditora = NULL;
+	CabecaEditora = NULL;
 	
 	gera_arq_bin();
 	imprime();
